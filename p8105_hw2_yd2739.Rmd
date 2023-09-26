@@ -1,0 +1,122 @@
+---
+title: "p8105_hw2_yd2739"
+author: "Yuxuan Du"
+date: "2023-09-26"
+output: github_document
+---
+
+## Problem 1
+
+We'll use the data in `pols-month.csv`, `unemployment.csv`, and `snp.csv`
+
+**load `pols-month.csv`**
+```{r}
+library(tidyverse)
+pols_month_df = 
+  read_csv("HW2_P1_DATA/pols-month.csv")|>
+  janitor::clean_names()|>
+  separate(
+    col = mon,
+    into = c("year", "month", "day"), 
+    sep = "-") |>
+  mutate(
+    month = case_match(
+      month, 
+      '01' ~ "January", 
+      '02' ~ "February", 
+      '03' ~ "March", 
+      '04' ~ "April", 
+      '05' ~ "May", 
+      '06' ~ "June", 
+      '07' ~ "July", 
+      '08' ~ "August", 
+      '09' ~ "September", 
+      '10' ~ "October", 
+      '11' ~ "November", 
+      '12' ~ "December"
+    )
+  )|>
+  mutate(
+    president = case_match(
+      prez_gop, 
+      1 ~ "republican", 
+      0 ~ "democratic"
+    )
+  )|>
+  subset(select = -c(prez_gop, prez_dem, day))
+```
+
+**load `snp.csv`**
+```{r}
+snp_df = 
+  read_csv("HW2_P1_DATA/snp.csv")|>
+  janitor::clean_names()|>
+  separate(
+    col = date,
+    into = c("month", "day", "year"), 
+    sep = "/") |>
+  mutate(
+    month = case_match(
+      month, 
+      '1' ~ "January", 
+      '2' ~ "February", 
+      '3' ~ "March", 
+      '4' ~ "April", 
+      '5' ~ "May", 
+      '6' ~ "June", 
+      '7' ~ "July", 
+      '8' ~ "August", 
+      '9' ~ "September", 
+      '10' ~ "October", 
+      '11' ~ "November", 
+      '12' ~ "December"
+    )
+  )|>
+  mutate(
+    year = as.numeric(year)
+  )|>
+  mutate(
+    year = ifelse(year>=50, 1900+year, 2000+year), 
+    year = as.character(year)
+  )|>
+  relocate(c(year, month))
+```
+
+**load`unemployment.csv`**
+```{r}
+unemployment_df = 
+  read_csv("HW2_P1_DATA/unemployment.csv")|>
+  janitor::clean_names()|>
+  pivot_longer(
+    jan:dec, 
+    names_to = "month",
+    values_to = "unemployment", 
+  )|>
+  mutate(
+    year = as.character(year)
+  )|>
+  mutate(
+    month = case_match(
+      month, 
+      'jan' ~ "January", 
+      'feb' ~ "February", 
+      'mar' ~ "March", 
+      'apr' ~ "April", 
+      'may' ~ "May", 
+      'jun' ~ "June", 
+      'jul' ~ "July", 
+      'aug' ~ "August", 
+      'sep' ~ "September", 
+      'oct' ~ "October", 
+      'nov' ~ "November", 
+      'dec' ~ "December"
+    )
+  )
+  
+```
+**merge three dataframe**
+```{r}
+P1_whole_df = 
+  left_join(pols_month_df, snp_df, by = c("year", "month"))|>
+  left_join(unemployment_df, by = c("year", "month"))
+```
