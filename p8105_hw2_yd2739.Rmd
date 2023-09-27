@@ -239,6 +239,7 @@ demo_info_df =
   rename(
     age_starting = current_age
   )
+head(demo_info_df)
 
 avg_age_baseline = mean(pull(demo_info_df, age_starting))
 
@@ -255,8 +256,6 @@ total_women_carrier = subset(
   nrow()
 
 women_apoe4_percent = total_women_carrier/total_women
-
-demo_info_df
 ```
 
 We can seee that there are 479 people met the requirement and joined the experiment, 
@@ -274,7 +273,7 @@ amyloid_df =
     ratio_fourth_year = time_4, 
     ratio_sixth_year = time_6, 
     ratio_eighth_year = time_8)
-amyloid_df
+head(amyloid_df)
 ```
 
 We also need to skip the first line of mci_amyloid.csv since it is not the header for dataframe. Also to follow the format of `demo_info_df`, the variable `study_id` is renamed as `id`. There are missing values in dataset, but it might means they didn't show up at that time. The size of the dataframe is 487 x 6. 
@@ -282,12 +281,14 @@ We also need to skip the first line of mci_amyloid.csv since it is not the heade
 ```{r}
 only_baseline = demo_info_df |>
   anti_join(amyloid_df, by = "id")
-only_baseline
+head(only_baseline)
+
 only_amyloid = amyloid_df |>
   anti_join(demo_info_df, by = "id")
-only_amyloid
+head(only_amyloid)
+
 both_df = merge(demo_info_df, amyloid_df)
-both_df
+head(both_df)
 write.csv(both_df, "HW2_P3_DATA/merged.csv", row.names = FALSE)
 ```
 
