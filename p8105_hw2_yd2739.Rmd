@@ -128,3 +128,89 @@ The snp dataset contains the Standard & Poor’s stock market index during diffe
 The unemployment dataset contains the unemployment rate in the US during different period of time. 
 
 The time span of the dataset is from 1947 to 2015. The size of the merged dataset is 822 x 12. 
+
+
+
+## Problem 2
+```{r}
+# load the dataset, change the format of date, recalculate homes_powered
+# also we noticed that the Gwynnda Trash Wheel only has the "plastic_bags" variable
+# while other two dataset has "grocery_bags" and  "chip_bags" two variables 
+# The number of grocery_bags and chip_bags are added together and form a new col
+# "plastic_bags" to make a unify data. 
+mr_trash_wheel_df = 
+  readxl::read_excel("HW2_P2_DATA/202207 Trash Wheel Collection Data.xlsx", sheet = "Mr. Trash Wheel", range = "A2:N549")|>
+  janitor::clean_names()|>
+  mutate(
+    date = substr(date, nchar(date) - 1, nchar(date))
+  )|>
+  mutate(
+    plastic_bags = grocery_bags + chip_bags
+  )|>
+  subset(
+    select = -c(grocery_bags, chip_bags)
+    )|>
+  mutate(
+    homes_powered = (weight_tons*500/30)
+  )|>
+  mutate(name = "Mr_trash_wheel")
+
+professor_trash_wheel_df = 
+  readxl::read_excel("HW2_P2_DATA/202207 Trash Wheel Collection Data.xlsx", sheet = "Professor Trash Wheel", range = "A2:M96")|>
+  janitor::clean_names()|>
+  mutate(
+    date = substr(date, nchar(date) - 1, nchar(date))
+  )|>
+  mutate(
+    plastic_bags = grocery_bags + chip_bags
+  )|>
+  subset(
+    select = -c(grocery_bags, chip_bags)
+    )|>
+  mutate(
+    homes_powered = (weight_tons*500/30), 
+    year = as.character(year)
+  )|>
+  mutate(name = "Professor_trash_wheel")
+
+gwynnda_trash_wheel_df = 
+  readxl::read_excel("HW2_P2_DATA/202207 Trash Wheel Collection Data.xlsx", sheet = "Gwynnda Trash Wheel", range = "A2:K108")|>
+  janitor::clean_names()|>
+  mutate(
+    date = substr(date, nchar(date) - 1, nchar(date))
+  )|>
+  mutate(
+    homes_powered = (weight_tons*500/30),
+    year = as.character(year)
+  )|>
+  mutate(name = "Gwynnda_trash_wheel")
+
+trash_wheel_collection_df = 
+  bind_rows(mr_trash_wheel_df, professor_trash_wheel_df, gwynnda_trash_wheel_df)
+
+total_weight_professor = sum(pull(professor_trash_wheel_df, weight_tons))
+
+total_cigarette_butts_gwynnda_july_2021 = subset(
+  gwynnda_trash_wheel_df, 
+  month == "July" & year == "2021"
+  )|>
+  pull(
+    cigarette_butts
+    )|>
+  sum()
+  
+```
+
+The size of the merged dataframe is 747 x 14. The `plastic_bags` variables for Mr.Trash wheel and Professor Trash wheel are the total of `chip_bags` and `grocery_bags` since Gwynnda trash wheel didn't separately count different bags. 
+
+Some interesting information: Only Mr.Trash Wheel has the variable of `sports_ball`;
+
+Gwynnda Trash Wheel does not have the variable `galss_bottles`;
+
+The way of recording date is kind of redundant since there are variables for year and month (the format of date is changed later)
+
+There might be missing data in the dataset gwynnda_trash_wheel_df since there are days they collected tons of trash while all trash category counts is 0. 
+
+The total weight of trash collected by Professor Trash Wheel is `r total_weight_professor`. 
+
+The total number of cigarette butts collected by Gwynnda in July of 2021 is `r total_cigarette_butts_gwynnda_july_2021`. 
