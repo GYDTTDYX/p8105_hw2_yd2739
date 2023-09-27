@@ -44,6 +44,7 @@ pols_month_df =
     )
   )|>
   subset(select = -c(prez_gop, prez_dem, day))
+pols_month_df
 ```
 
 **load `snp.csv`**
@@ -80,6 +81,7 @@ snp_df =
     year = as.character(year)
   )|>
   relocate(c(year, month))
+snp_df
 ```
 
 **load`unemployment.csv`**
@@ -112,13 +114,14 @@ unemployment_df =
       'dec' ~ "December"
     )
   )
-  
+unemployment_df
 ```
 **merge three dataframe**
 ```{r}
 P1_whole_df = 
   left_join(pols_month_df, snp_df, by = c("year", "month"))|>
   left_join(unemployment_df, by = c("year", "month"))
+P1_whole_df
 ```
 
 So the pols_month dataset contains the information of president, governors, senators, and representatives from republican and democratic during different period of time. 
@@ -154,7 +157,9 @@ mr_trash_wheel_df =
     homes_powered = (weight_tons*500/30)
   )|>
   mutate(name = "Mr_trash_wheel")
-
+mr_trash_wheel_df
+```
+```{r}
 professor_trash_wheel_df = 
   readxl::read_excel("HW2_P2_DATA/202207 Trash Wheel Collection Data.xlsx", sheet = "Professor Trash Wheel", range = "A2:M96")|>
   janitor::clean_names()|>
@@ -172,7 +177,10 @@ professor_trash_wheel_df =
     year = as.character(year)
   )|>
   mutate(name = "Professor_trash_wheel")
+professor_trash_wheel_df
+```
 
+```{r}
 gwynnda_trash_wheel_df = 
   readxl::read_excel("HW2_P2_DATA/202207 Trash Wheel Collection Data.xlsx", sheet = "Gwynnda Trash Wheel", range = "A2:K108")|>
   janitor::clean_names()|>
@@ -198,7 +206,7 @@ total_cigarette_butts_gwynnda_july_2021 = subset(
     cigarette_butts
     )|>
   sum()
-  
+gwynnda_trash_wheel_df
 ```
 
 The size of the merged dataframe is 747 x 14. The `plastic_bags` variables for Mr.Trash wheel and Professor Trash wheel are the total of `chip_bags` and `grocery_bags` since Gwynnda trash wheel didn't separately count different bags. 
@@ -247,6 +255,8 @@ total_women_carrier = subset(
   nrow()
 
 women_apoe4_percent = total_women_carrier/total_women
+
+demo_info_df
 ```
 
 We can seee that there are 479 people met the requirement and joined the experiment, 
@@ -264,19 +274,20 @@ amyloid_df =
     ratio_fourth_year = time_4, 
     ratio_sixth_year = time_6, 
     ratio_eighth_year = time_8)
+amyloid_df
 ```
 
-We also need to skip the first line of mci_amyloid.csv since it is not the header for dataframe. Also to follow the format of `r demo_info_df`, the variable `study_id` is renamed as `id`. There are missing values in dataset, but it might means they didn't show up at that time. The size of the dataframe is 487 x 6. 
+We also need to skip the first line of mci_amyloid.csv since it is not the header for dataframe. Also to follow the format of `demo_info_df`, the variable `study_id` is renamed as `id`. There are missing values in dataset, but it might means they didn't show up at that time. The size of the dataframe is 487 x 6. 
 
 ```{r}
 only_baseline = demo_info_df |>
   anti_join(amyloid_df, by = "id")
-
+only_baseline
 only_amyloid = amyloid_df |>
   anti_join(demo_info_df, by = "id")
-
+only_amyloid
 both_df = merge(demo_info_df, amyloid_df)
-
+both_df
 write.csv(both_df, "HW2_P3_DATA/merged.csv", row.names = FALSE)
 ```
 
