@@ -214,3 +214,72 @@ There might be missing data in the dataset gwynnda_trash_wheel_df since there ar
 The total weight of trash collected by Professor Trash Wheel is `r total_weight_professor`. 
 
 The total number of cigarette butts collected by Gwynnda in July of 2021 is `r total_cigarette_butts_gwynnda_july_2021`. 
+
+## Problem 3
+
+```{r}
+demo_info_df = 
+  read_csv("HW2_P3_DATA/MCI_baseline.csv", skip = 1)|>
+  janitor::clean_names()|>
+  mutate(
+    sex = factor(sex),
+    apoe4 = factor(apoe4), 
+  )|>
+  subset(
+    current_age < age_at_onset | age_at_onset == "."
+  )|>
+  rename(
+    age_starting = current_age
+  )
+
+avg_age_baseline = mean(pull(demo_info_df, age_starting))
+
+total_women = subset(
+  demo_info_df, 
+  sex == 0
+  )|>
+  nrow()
+
+total_women_carrier = subset(
+  demo_info_df, 
+  sex == 0 & apoe4 == 1
+  )|>
+  nrow()
+
+women_apoe4_percent = total_women_carrier/total_women
+```
+
+We can seee that there are 479 people met the requirement and joined the experiment, 
+93 of the 479 developed MCI at last. The average baseline age is `r avg_age_baseline`. 
+The proportion of women in the study who are APOE4 carriers is `r women_apoe4_percent`. 
+
+```{r}
+amyloid_df = 
+  read_csv("HW2_P3_DATA/mci_amyloid.csv", skip = 1)|>
+  janitor::clean_names()|>
+  rename(
+    id=study_id, 
+    ratio_base_line = baseline, 
+    ratio_second_year = time_2, 
+    ratio_fourth_year = time_4, 
+    ratio_sixth_year = time_6, 
+    ratio_eighth_year = time_8)
+```
+
+We also need to skip the first line of mci_amyloid.csv since it is not the header for dataframe. Also to follow the format of `r demo_info_df`, the variable `study_id` is renamed as `id`. There are missing values in dataset, but it might means they didn't show up at that time. The size of the dataframe is 487 x 6. 
+
+```{r}
+only_baseline = demo_info_df |>
+  anti_join(amyloid_df, by = "id")
+
+only_amyloid = amyloid_df |>
+  anti_join(demo_info_df, by = "id")
+
+both_df = merge(demo_info_df, amyloid_df)
+
+write.csv(both_df, "HW2_P3_DATA/merged.csv", row.names = FALSE)
+```
+
+There are 16 participants appear only in the Mmyloid dataset and 8 participants appear only in the baseline dataset. 
+
+For the merged dataset, there are 471 observation, each with 11 variables. 
