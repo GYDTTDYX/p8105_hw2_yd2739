@@ -39,6 +39,7 @@ pols_month_df =
   mutate(
     president = case_match(
       prez_gop, 
+      2 ~ "republican",
       1 ~ "republican", 
       0 ~ "democratic"
     )
