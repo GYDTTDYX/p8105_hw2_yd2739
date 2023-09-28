@@ -137,22 +137,12 @@ The time span of the dataset is from 1947 to 2015. The size of the merged datase
 ## Problem 2
 ```{r}
 # load the dataset, change the format of date, recalculate homes_powered
-# also we noticed that the Gwynnda Trash Wheel only has the "plastic_bags" variable
-# while other two dataset has "grocery_bags" and  "chip_bags" two variables 
-# The number of grocery_bags and chip_bags are added together and form a new col
-# "plastic_bags" to make a unify data. 
 mr_trash_wheel_df = 
   readxl::read_excel("HW2_P2_DATA/202207 Trash Wheel Collection Data.xlsx", sheet = "Mr. Trash Wheel", range = "A2:N549")|>
   janitor::clean_names()|>
   mutate(
     date = substr(date, nchar(date) - 1, nchar(date))
   )|>
-  mutate(
-    plastic_bags = grocery_bags + chip_bags
-  )|>
-  subset(
-    select = -c(grocery_bags, chip_bags)
-    )|>
   mutate(
     homes_powered = (weight_tons*500/30)
   )|>
@@ -166,12 +156,6 @@ professor_trash_wheel_df =
   mutate(
     date = substr(date, nchar(date) - 1, nchar(date))
   )|>
-  mutate(
-    plastic_bags = grocery_bags + chip_bags
-  )|>
-  subset(
-    select = -c(grocery_bags, chip_bags)
-    )|>
   mutate(
     homes_powered = (weight_tons*500/30), 
     year = as.character(year)
@@ -209,7 +193,7 @@ total_cigarette_butts_gwynnda_july_2021 = subset(
 gwynnda_trash_wheel_df
 ```
 
-The size of the merged dataframe is 747 x 14. The `plastic_bags` variables for Mr.Trash wheel and Professor Trash wheel are the total of `chip_bags` and `grocery_bags` since Gwynnda trash wheel didn't separately count different bags. 
+The size of the merged dataframe is 747 x 14.  
 
 Some interesting information: Only Mr.Trash Wheel has the variable of `sports_ball`;
 
