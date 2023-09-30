@@ -200,6 +200,8 @@ Some interesting information: Only Mr.Trash Wheel has the variable of `sports_ba
 
 Gwynnda Trash Wheel does not have the variable `galss_bottles`;
 
+The category in Gwynnda dataset contains a category of `plastic_bags`, but it does not include category `grocery_bags` and `chip_bags` that exist in other two dataset. This might be an inconsistency in variable names, but I didn't change the format. 
+
 The way of recording date is kind of redundant since there are variables for year and month (the format of date is changed later)
 
 There might be missing data in the dataset gwynnda_trash_wheel_df since there are days they collected tons of trash while all trash category counts is 0. 
@@ -215,8 +217,10 @@ demo_info_df =
   read_csv("HW2_P3_DATA/MCI_baseline.csv", skip = 1)|>
   janitor::clean_names()|>
   mutate(
-    sex = factor(sex),
-    apoe4 = factor(apoe4), 
+    sex = recode(sex, "1" = "male", "0" = "female"),
+    apoe4 = recode(apoe4, "1" = "carrier", "0" = "non-carrier"), 
+    sex = factor(sex), 
+    apoe4 = factor(apoe4)
   )|>
   subset(
     current_age < age_at_onset | age_at_onset == "."
@@ -277,6 +281,6 @@ head(both_df)
 write.csv(both_df, "HW2_P3_DATA/merged.csv", row.names = FALSE)
 ```
 
-There are 16 participants appear only in the Mmyloid dataset and 8 participants appear only in the baseline dataset. 
+There are 16 participants appear only in the myloid dataset and 8 participants appear only in the baseline dataset. 
 
 For the merged dataset, there are 471 observation, each with 11 variables. 
