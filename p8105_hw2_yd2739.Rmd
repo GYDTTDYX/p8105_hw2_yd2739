@@ -279,8 +279,16 @@ head(only_amyloid)
 both_df = merge(demo_info_df, amyloid_df)
 head(both_df)
 write.csv(both_df, "HW2_P3_DATA/merged.csv", row.names = FALSE)
+
+female_count = nrow(filter(both_df, sex == "female"))
+
+male_count = nrow(filter(both_df, sex == "male"))
+
+MCI_count = nrow(filter(both_df, age_at_onset != '.'))
 ```
 
 There are 16 participants appear only in the amyloid dataset and 8 participants appear only in the baseline dataset. 
 
 For the merged dataset, there are 471 observation, each with 11 variables. 
+
+There are `r female_count` female participant and `r male_count` male participant both appeared in two dataset, and there are `r MCI_count` participant who developed MCI at last. 
