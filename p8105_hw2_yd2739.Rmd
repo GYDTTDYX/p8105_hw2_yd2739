@@ -139,7 +139,7 @@ The time span of the dataset is from 1947 to 2015. The size of the merged datase
 ```{r}
 # load the dataset, change the format of date, recalculate homes_powered
 mr_trash_wheel_df = 
-  readxl::read_excel("HW2_P2_DATA/202207 Trash Wheel Collection Data.xlsx", sheet = "Mr. Trash Wheel", range = "A2:N549")|>
+  readxl::read_excel("HW2_P2_DATA/202309 Trash Wheel Collection Data.xlsx", sheet = "Mr. Trash Wheel", range = "A2:N586")|>
   janitor::clean_names()|>
   mutate(
     date = substr(date, nchar(date) - 1, nchar(date))
@@ -152,7 +152,7 @@ mr_trash_wheel_df
 ```
 ```{r}
 professor_trash_wheel_df = 
-  readxl::read_excel("HW2_P2_DATA/202207 Trash Wheel Collection Data.xlsx", sheet = "Professor Trash Wheel", range = "A2:M96")|>
+  readxl::read_excel("HW2_P2_DATA/202309 Trash Wheel Collection Data.xlsx", sheet = "Professor Trash Wheel", range = "A2:M108")|>
   janitor::clean_names()|>
   mutate(
     date = substr(date, nchar(date) - 1, nchar(date))
@@ -167,7 +167,7 @@ professor_trash_wheel_df
 
 ```{r}
 gwynnda_trash_wheel_df = 
-  readxl::read_excel("HW2_P2_DATA/202207 Trash Wheel Collection Data.xlsx", sheet = "Gwynnda Trash Wheel", range = "A2:K108")|>
+  readxl::read_excel("HW2_P2_DATA/202309 Trash Wheel Collection Data.xlsx", sheet = "Gwynnda Trash Wheel", range = "A2:L157")|>
   janitor::clean_names()|>
   mutate(
     date = substr(date, nchar(date) - 1, nchar(date))
@@ -194,13 +194,11 @@ total_cigarette_butts_gwynnda_july_2021 = subset(
 gwynnda_trash_wheel_df
 ```
 
-The size of the merged dataframe is 747 x 14.  
+The size of the merged dataframe is 845 x 15.  
 
 Some interesting information: Only Mr.Trash Wheel has the variable of `sports_ball`;
 
 Gwynnda Trash Wheel does not have the variable `galss_bottles`;
-
-The category in Gwynnda dataset contains a category of `plastic_bags`, but it does not include category `grocery_bags` and `chip_bags` that exist in other two dataset. This might be an inconsistency in variable names, but I didn't change the format. 
 
 The way of recording date is kind of redundant since there are variables for year and month (the format of date is changed later)
 
@@ -250,13 +248,7 @@ total_women_carrier = subset(
 women_apoe4_percent = total_women_carrier/total_women
 ```
 
-We can seee that there are 479 people met the requirement and joined the experiment, 
-93 of the 479 developed MCI at last. The average baseline age is `r avg_age_baseline`. 
-The proportion of women in the study who are APOE4 carriers is `r women_apoe4_percent`. 
-There are lot of participant who didn't got MCI at the end of the research, all '.' are 
-replaced as Na. I didn't filter them out since it might still be useful when we want to do 
-analysis using models like logistic regression according to their APOE4 status and they 
-also contains informations. 
+We can see that there are 479 people met the inclusion criteria that didn't have MCI at baseline and joined the experiment. Among the 479 participants, 93 of the 479 developed MCI at last. The average baseline age is `r avg_age_baseline`. The proportion of women in the study who are APOE4 carriers is `r women_apoe4_percent`. There are lot of participant who didn't got MCI at the end of the research, and their onset age is recorded as '.', these values were replaced by Na, but I didn't filter them out since it might still be useful if we want to do analysis using models like logistic regression to analyze the relationship of different variables and their final MCI status. To filter them out, we only need to use drop_na() function.
 
 ```{r}
 amyloid_df = 
@@ -272,7 +264,7 @@ amyloid_df =
 head(amyloid_df)
 ```
 
-We also need to skip the first line of mci_amyloid.csv since it is not the header for dataframe. Also to follow the format of `demo_info_df`, the variable `study_id` is renamed as `id`. There are missing values in dataset, but it might means they didn't show up at that time. The size of the dataframe is 487 x 6. 
+We also need to skip the first line of mci_amyloid.csv since it is not the header for dataframe. Also to follow the format of `demo_info_df`, the variable `study_id` is renamed as `id`. There are missing values in dataset, it might means those participants didn't show up at that time. The size of the dataframe is 487 x 6. 
 
 ```{r}
 only_baseline = demo_info_df |>
