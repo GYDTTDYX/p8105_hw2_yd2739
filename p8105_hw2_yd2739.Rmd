@@ -261,15 +261,23 @@ amyloid_df =
   janitor::clean_names()|>
   rename(
     id=study_id, 
-    ratio_base_line = baseline, 
-    ratio_second_year = time_2, 
-    ratio_fourth_year = time_4, 
-    ratio_sixth_year = time_6, 
-    ratio_eighth_year = time_8)
+    baseline = baseline, 
+    second_year = time_2, 
+    fourth_year = time_4, 
+    sixth_year = time_6, 
+    eighth_year = time_8)
+
+amyloid_pivoted_df = amyloid_df |>
+  pivot_longer(
+    baseline:eighth_year, 
+    names_to = "time",
+    values_to = "42/40_ratio", 
+  )
 head(amyloid_df)
+head(amyloid_pivoted_df)
 ```
 
-We also need to skip the first line of mci_amyloid.csv since it is not the header for dataframe. Also to follow the format of `demo_info_df`, the variable `study_id` is renamed as `id`. There are missing values in dataset, it might means those participants didn't show up at that time. The size of the dataframe is 487 x 6. 
+We also need to skip the first line of mci_amyloid.csv since it is not the header for dataframe. Also to follow the format of `demo_info_df`, the variable `study_id` is renamed as `id`. There are missing values in dataset, it might means those participants didn't show up at that time. The size of the dataframe is 487 x 6. Also, we could pivot the dataset longer, it was named as `amyloid_pivoted_df`. 
 
 ```{r}
 only_baseline = demo_info_df |>
@@ -281,8 +289,16 @@ only_amyloid = amyloid_df |>
 head(only_amyloid)
 
 both_df = merge(demo_info_df, amyloid_df)
+
+both_pivoted_df = merge(demo_info_df, amyloid_pivoted_df)
+
 head(both_df)
+
+head(both_pivoted_df)
+
 write.csv(both_df, "HW2_P3_DATA/merged.csv", row.names = FALSE)
+
+write.csv(both_pivoted_df, "HW2_P3_DATA/merged_pivoted.csv", row.names = FALSE)
 
 female_count = nrow(filter(both_df, sex == "female"))
 
