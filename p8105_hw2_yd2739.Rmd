@@ -13,7 +13,7 @@ We'll use the data in `pols-month.csv`, `unemployment.csv`, and `snp.csv`
 ```{r}
 library(tidyverse)
 pols_month_df = 
-  read_csv("HW2_P1_DATA/pols-month.csv")|>
+  read_csv("DATA/HW2_P1_DATA/pols-month.csv")|>
   janitor::clean_names()|>
   separate(
     col = mon,
@@ -51,7 +51,7 @@ pols_month_df
 **load `snp.csv`**
 ```{r}
 snp_df = 
-  read_csv("HW2_P1_DATA/snp.csv")|>
+  read_csv("DATA/HW2_P1_DATA/snp.csv")|>
   janitor::clean_names()|>
   separate(
     col = date,
@@ -88,7 +88,7 @@ snp_df
 **load`unemployment.csv`**
 ```{r}
 unemployment_df = 
-  read_csv("HW2_P1_DATA/unemployment.csv")|>
+  read_csv("DATA/HW2_P1_DATA/unemployment.csv")|>
   janitor::clean_names()|>
   pivot_longer(
     jan:dec, 
@@ -139,7 +139,7 @@ The time span of the dataset is from 1947 to 2015. The size of the merged datase
 ```{r}
 # load the dataset, change the format of date, recalculate homes_powered
 mr_trash_wheel_df = 
-  readxl::read_excel("HW2_P2_DATA/202309 Trash Wheel Collection Data.xlsx", sheet = "Mr. Trash Wheel", range = "A2:N586")|>
+  readxl::read_excel("DATA/HW2_P2_DATA/202309 Trash Wheel Collection Data.xlsx", sheet = "Mr. Trash Wheel", range = "A2:N586")|>
   janitor::clean_names()|>
   mutate(
     date = substr(date, nchar(date) - 1, nchar(date))
@@ -152,7 +152,7 @@ mr_trash_wheel_df
 ```
 ```{r}
 professor_trash_wheel_df = 
-  readxl::read_excel("HW2_P2_DATA/202309 Trash Wheel Collection Data.xlsx", sheet = "Professor Trash Wheel", range = "A2:M108")|>
+  readxl::read_excel("DATA/HW2_P2_DATA/202309 Trash Wheel Collection Data.xlsx", sheet = "Professor Trash Wheel", range = "A2:M108")|>
   janitor::clean_names()|>
   mutate(
     date = substr(date, nchar(date) - 1, nchar(date))
@@ -167,7 +167,7 @@ professor_trash_wheel_df
 
 ```{r}
 gwynnda_trash_wheel_df = 
-  readxl::read_excel("HW2_P2_DATA/202309 Trash Wheel Collection Data.xlsx", sheet = "Gwynnda Trash Wheel", range = "A2:L157")|>
+  readxl::read_excel("DATA/HW2_P2_DATA/202309 Trash Wheel Collection Data.xlsx", sheet = "Gwynnda Trash Wheel", range = "A2:L157")|>
   janitor::clean_names()|>
   mutate(
     date = substr(date, nchar(date) - 1, nchar(date))
@@ -212,7 +212,7 @@ The total number of cigarette butts collected by Gwynnda in July of 2021 is `r t
 
 ```{r}
 demo_info_df = 
-  read_csv("HW2_P3_DATA/MCI_baseline.csv", skip = 1)|>
+  read_csv("DATA/HW2_P3_DATA/MCI_baseline.csv", skip = 1)|>
   janitor::clean_names()|>
   mutate(
     sex = recode(sex, "1" = "male", "0" = "female"),
@@ -253,11 +253,11 @@ total_women_carrier = subset(
 women_apoe4_percent = total_women_carrier/total_women
 ```
 
-We can see that there are `r nrow(read_csv("HW2_P3_DATA/MCI_baseline.csv", skip = 1))` people recruited in the research. Among these people, there are `r nrow(demo_info_df)` people met the inclusion criteria that didn't have MCI at baseline and joined the experiment. Among the 479 participants, `r nrow(got_MCI_df)` of the `r nrow(demo_info_df)` developed MCI at last. The average baseline age is `r avg_age_baseline`. The proportion of women in the study who are APOE4 carriers is `r women_apoe4_percent`. There are lot of participant who didn't got MCI at the end of the research, and their onset age is recorded as '.', these values were replaced by Na, but I didn't filter them out since it might still be useful if we want to do analysis using models like logistic regression to analyze the relationship of different variables and their final MCI status. To filter them out, we only need to use drop_na() function.
+We can see that there are `r nrow(read_csv("DATA/HW2_P3_DATA/MCI_baseline.csv", skip = 1))` people recruited in the research. Among these people, there are `r nrow(demo_info_df)` people met the inclusion criteria that didn't have MCI at baseline and joined the experiment. Among the 479 participants, `r nrow(got_MCI_df)` of the `r nrow(demo_info_df)` developed MCI at last. The average baseline age is `r avg_age_baseline`. The proportion of women in the study who are APOE4 carriers is `r women_apoe4_percent`. There are lot of participant who didn't got MCI at the end of the research, and their onset age is recorded as '.', these values were replaced by Na, but I didn't filter them out since it might still be useful if we want to do analysis using models like logistic regression to analyze the relationship of different variables and their final MCI status. To filter them out, we only need to use drop_na() function.
 
 ```{r}
 amyloid_df = 
-  read_csv("HW2_P3_DATA/mci_amyloid.csv", skip = 1)|>
+  read_csv("DATA/HW2_P3_DATA/mci_amyloid.csv", skip = 1)|>
   janitor::clean_names()|>
   rename(
     id=study_id, 
@@ -296,9 +296,9 @@ head(both_df)
 
 head(both_pivoted_df)
 
-write.csv(both_df, "HW2_P3_DATA/merged.csv", row.names = FALSE)
+write.csv(both_df, "DATA/HW2_P3_DATA/merged.csv", row.names = FALSE)
 
-write.csv(both_pivoted_df, "HW2_P3_DATA/merged_pivoted.csv", row.names = FALSE)
+write.csv(both_pivoted_df, "DATA/HW2_P3_DATA/merged_pivoted.csv", row.names = FALSE)
 
 female_count = nrow(filter(both_df, sex == "female"))
 
